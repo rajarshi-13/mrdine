@@ -1,40 +1,24 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import settings
 from app.core.database import init_db
-from app.models import *
 from app.api.v1.api import api_router
+# Import SQLModel models so they are registered before table creation
+from app.models.restaurant import Restaurant, AdminUser
+from app.models.table import RestaurantTable
+from app.models.menu import MenuItem
+from app.models.order import Order, OrderItem
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+app = FastAPI(title="Mr. Dine API", version="0.1.0")
+
+@app.on_event("startup")
+def on_startup():
     init_db()
-    yield
 
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    lifespan=lifespan
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
-def health_check():
-    return {
-        "status": "healthy",
-        "app_name": settings.PROJECT_NAME,
-        "version": "1.0.0"
-    }
+def root():
+    return {"message": "Welcome to Mr. Dine API"}
 
-@app.get(f"{settings.API_V1_STR}/ping")
+@app.get("/api/v1/ping")
 def ping():
-    return {"message": "Mr. Dine API is online"}
+    return {"ping": "pong"}
