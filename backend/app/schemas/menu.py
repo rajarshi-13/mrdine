@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 from pydantic import BaseModel
 from app.models.menu import ItemCategory
 
@@ -24,3 +24,6 @@ class MenuItemUpdate(BaseModel):
 class MenuItemRead(MenuItemBase):
     id: int
     restaurant_id: int
+
+    class Config:
+        from_attributes = True

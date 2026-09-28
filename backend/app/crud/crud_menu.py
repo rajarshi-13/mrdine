@@ -4,7 +4,10 @@ from app.models.menu import MenuItem
 from app.schemas.menu import MenuItemCreate, MenuItemUpdate
 
 def create_menu_item(db: Session, item_in: MenuItemCreate, restaurant_id: int) -> MenuItem:
-    db_item = MenuItem.model_validate(item_in, update={"restaurant_id": restaurant_id})
+    db_item = MenuItem(
+        restaurant_id=restaurant_id,
+        **item_in.model_dump()
+    )
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
