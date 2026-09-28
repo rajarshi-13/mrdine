@@ -1,16 +1,17 @@
-from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 
-class RestaurantCreate(BaseModel):
+class RestaurantBase(BaseModel):
     name: str
     slug: str
+    address: Optional[str] = None
 
-class RestaurantRead(BaseModel):
+class RestaurantCreate(RestaurantBase):
+    pass
+
+class RestaurantRead(RestaurantBase):
     id: int
-    name: str
-    slug: str
-    created_at: datetime
+    is_active: bool
 
     class Config:
         from_attributes = True

@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field
 
 class ItemCategory(str, Enum):
     APPETIZERS = "APPETIZERS"
@@ -10,6 +10,7 @@ class ItemCategory(str, Enum):
     SIDES = "SIDES"
 
 class MenuItem(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: Optional[int] = Field(default=None, primary_key=True)
     restaurant_id: int = Field(foreign_key="restaurant.id")
     name: str
